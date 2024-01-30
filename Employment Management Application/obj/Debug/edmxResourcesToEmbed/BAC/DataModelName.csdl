@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="SDF_ConstructionModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Employee">
+    <Key>
+      <PropertyRef Name="EmployeeID" />
+    </Key>
+    <Property Name="EmployeeID" Type="Int32" Nullable="false" />
+    <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="PhoneNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="EmployeeProject" Relationship="Self.FK_EmployeeProject_Employee" FromRole="Employee" ToRole="EmployeeProject" />
+  </EntityType>
+  <EntityType Name="EmployeeProject">
+    <Key>
+      <PropertyRef Name="RegistrationID" />
+    </Key>
+    <Property Name="RegistrationID" Type="Int32" Nullable="false" />
+    <Property Name="EmployeeID" Type="Int32" />
+    <Property Name="ProjectNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_EmployeeProject_Employee" FromRole="EmployeeProject" ToRole="Employee" />
+    <NavigationProperty Name="Projects" Relationship="Self.FK_EmployeeProject_Projects" FromRole="EmployeeProject" ToRole="Projects" />
+  </EntityType>
+  <EntityType Name="Projects">
+    <Key>
+      <PropertyRef Name="ProjectNumber" />
+    </Key>
+    <Property Name="ProjectNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="ProjectTitle" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="Duration" Type="Int32" />
+    <NavigationProperty Name="EmployeeProject" Relationship="Self.FK_EmployeeProject_Projects" FromRole="Projects" ToRole="EmployeeProject" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <Association Name="FK_EmployeeProject_Employee">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
+    <End Role="EmployeeProject" Type="Self.EmployeeProject" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="EmployeeID" />
+      </Principal>
+      <Dependent Role="EmployeeProject">
+        <PropertyRef Name="EmployeeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_EmployeeProject_Projects">
+    <End Role="Projects" Type="Self.Projects" Multiplicity="0..1" />
+    <End Role="EmployeeProject" Type="Self.EmployeeProject" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Projects">
+        <PropertyRef Name="ProjectNumber" />
+      </Principal>
+      <Dependent Role="EmployeeProject">
+        <PropertyRef Name="ProjectNumber" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="SDF_ConstructionEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Employee" EntityType="Self.Employee" />
+    <EntitySet Name="EmployeeProject" EntityType="Self.EmployeeProject" />
+    <EntitySet Name="Projects" EntityType="Self.Projects" />
+    <EntitySet Name="Users" EntityType="Self.Users" />
+    <AssociationSet Name="FK_EmployeeProject_Employee" Association="Self.FK_EmployeeProject_Employee">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="EmployeeProject" EntitySet="EmployeeProject" />
+    </AssociationSet>
+    <AssociationSet Name="FK_EmployeeProject_Projects" Association="Self.FK_EmployeeProject_Projects">
+      <End Role="Projects" EntitySet="Projects" />
+      <End Role="EmployeeProject" EntitySet="EmployeeProject" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
